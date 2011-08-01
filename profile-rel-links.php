@@ -52,6 +52,24 @@ if(is_admin()) {
 			<?php
 		});
 	});
-
 }
+
+add_action('wp', function() {
+	if(!get_option('prl_intercept_links')) return;
+
+	global $wp_rewrite;
+	$rules = array();
+	foreach($wp_rewrite->rules as $rule => $val) {
+		if(preg_match('/^author/', $rule)) $rules[] = str_replace(array('(', '$'), array('(?:', ''), $rule);
+	}
+	ob_start(function($content) use ($rules) {
+		foreach($rules as $rule) {
+			//$content = preg_replace('#(<a[^>]*)(href=[\'"]'.$rule.')([\'"][^>]*>)#', '\1 rel="author" \2\3', $content);
+			$content = preg_replace('#(<a[^>]*)(href=[^>]*'.$rule.')#', '\1 rel="author" \2\3', $content);
+$content .= $rule . "\n";
+		}
+		return $content;
+	});
+});
+
 ?>
