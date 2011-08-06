@@ -70,9 +70,7 @@ add_action('init', function() {
 		}
 		ob_start(function($content) use ($rules) {
 			foreach($rules as $rule) {
-				//$content = preg_replace('#(<a[^>]*)(href=[\'"]'.$rule.')([\'"][^>]*>)#', '\1 rel="author" \2\3', $content);
 				$content = preg_replace('#(<a[^>]*)(href=[^>]*'.$rule.')#', '\1 rel="author" \2\3', $content);
-	$content .= $rule . "\n";
 			}
 			return $content;
 		});
